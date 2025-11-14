@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name = "ticket_detail")
 @Data
@@ -15,7 +17,7 @@ public class TicketDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ticket_detail_id")
-    private Long ticketDetailId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "ticket_id", nullable = false)
@@ -25,9 +27,9 @@ public class TicketDetail {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    @Column(name = "amount", nullable = false)
-    private Double amount;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal amount;   
 
-    @Column(name = "subtotal", nullable = false)
-    private Double subtotal;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal subtotal; 
 }

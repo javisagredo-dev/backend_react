@@ -2,7 +2,7 @@ package cl.duocuc.huertohogar.backend.mapper;
 
 import cl.duocuc.huertohogar.backend.dto.UserRegisterRequestDTO;
 import cl.duocuc.huertohogar.backend.dto.UserResponseDTO;
-import cl.duocuc.huertohogar.backend.entity.Type;
+import cl.duocuc.huertohogar.backend.entity.Role;
 import cl.duocuc.huertohogar.backend.entity.User;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +27,7 @@ public class UserMapper {
      * Convierte un DTO de registro en una entidad User.
      * El password debería venir ya hasheado desde el service.
      */
-    public User fromRegisterDTO(UserRegisterRequestDTO dto, String passwordHash, Type type) {
+    public User fromRegisterDTO(UserRegisterRequestDTO dto, String passwordHash, Role type) {
         User user = new User();
         user.setName(dto.getName());
         user.setLastname(dto.getLastname());

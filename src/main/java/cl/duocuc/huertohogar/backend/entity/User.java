@@ -35,6 +35,6 @@ public class User {
 
     @ManyToOne
     @JoinColumn(name = "type_id", nullable = false)
-    private Type type;
+    private Role type;
 }
 

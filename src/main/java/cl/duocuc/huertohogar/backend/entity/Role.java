@@ -6,15 +6,15 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 @Entity
-@Table(name = "type")
+@Table(name = "role")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Type {
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "type_id")
+    @Column(name = "role_id")
     private Long id;
 
     @Column(name = "name", nullable = false, unique = true, length = 255)

@@ -11,5 +11,7 @@ import java.math.BigDecimal;
 public class TicketCreateItemDTO {
     private Long productId;
     private BigDecimal amount;
+    private BigDecimal price;     // Precio unitario desde el front
+    private BigDecimal subtotal;  // Subtotal calculado en el front
 }
 

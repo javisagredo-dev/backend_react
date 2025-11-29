@@ -25,20 +25,27 @@ public class TicketController {
     @Autowired
     private TicketService ticketService;
 
+    // ---------------------------------------------------------
+    // CREAR TICKET (usa el usuario del token, no userId del body)
+    // ---------------------------------------------------------
     @PostMapping
     public ResponseEntity<TicketResponseDTO> createTicket(@RequestBody TicketCreateRequestDTO request) {
         TicketResponseDTO response = ticketService.createTicket(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<TicketResponseDTO>> getTicketsByUser(@PathVariable Long userId) {
-        List<TicketResponseDTO> tickets = ticketService.getTicketsByUser(userId);
+    // ---------------------------------------------------------
+    // LISTAR SOLO LOS TICKETS DEL USUARIO LOGUEADO
+    // ---------------------------------------------------------
+    @GetMapping("/my")
+    public ResponseEntity<List<TicketResponseDTO>> getMyTickets() {
+        List<TicketResponseDTO> tickets = ticketService.getMyTickets();
         return ResponseEntity.ok(tickets);
     }
 
-
-
+    // ---------------------------------------------------------
+    // OBTENER TICKET POR ID (solo si pertenece al usuario)
+    // ---------------------------------------------------------
     @GetMapping("/{ticketId}")
     public ResponseEntity<TicketResponseDTO> getTicketById(@PathVariable Long ticketId) {
         TicketResponseDTO ticket = ticketService.getTicketById(ticketId);

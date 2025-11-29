@@ -11,8 +11,7 @@ import lombok.Data;
 // El service lo usa para crear Ticket + TicketDetail y calcular el total
 @Data
 public class TicketCreateRequestDTO {
-
-    private Long userId; 
+    //id del usuario que hace la compra
     private List<TicketCreateItemDTO> items;
     private BigDecimal total;            // Total calculado en el front
     private LocalDateTime purchaseDate;  // Fecha desde el front

@@ -28,13 +28,13 @@ public class User implements UserDetails {
     private String email;
     private String password;
     
-    @Enumerated(EnumType.STRING)
-    private Role role; // Enum Role { USER, ADMIN }
+    @ManyToOne
+    @JoinColumn(name = "type_id")
+    private Type type;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Mapea el Enum Role a una lista de GrantedAuthority (ej. "ROLE_ADMIN")
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority(type.getName()));
     }
 
     @Override

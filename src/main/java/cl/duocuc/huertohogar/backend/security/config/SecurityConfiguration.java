@@ -1,6 +1,5 @@
 package cl.duocuc.huertohogar.backend.security.config;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -13,6 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import cl.duocuc.huertohogar.backend.security.jwt.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
@@ -30,8 +30,10 @@ public class SecurityConfiguration {
             .authorizeHttpRequests(auth -> auth
                 // Rutas públicas (para autenticación) solo de / api/v1/auth/
                 .requestMatchers("/api/v1/auth/**").permitAll()
+                .requestMatchers("/api/products").permitAll()
+                
                 // Otras rutas protegidas por roles globales (opcional, se usará @PreAuthorize en el controlador)
-                .anyRequest().authenticated() // Todas las demás rutas requieren autenticación
+                .anyRequest().authenticated()
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Gestión de sesión sin estado (JWT)
             .authenticationProvider(authenticationProvider)

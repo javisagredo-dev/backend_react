@@ -55,8 +55,7 @@ public class JwtService {
             UserDetails userDetails,
             long expiration
     ) {
-        // Opcional: Incluir roles/autoridades en los claims del token
-        extraClaims.put("roles", userDetails.getAuthorities());
+        extraClaims.put("role", userDetails.getAuthorities().stream().findFirst().map(a -> a.getAuthority()).orElse("USER"));
 
         return Jwts
                 .builder()

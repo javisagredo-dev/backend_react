@@ -1,9 +1,9 @@
 package cl.duocuc.huertohogar.backend.security.auth;
 
- // Asegúrate de importar tu Enum Role
-import cl.duocuc.huertohogar.backend.entity.Role; // Asegúrate de importar tu Enum Role
-import cl.duocuc.huertohogar.backend.entity.User; // Asegúrate de importar tu entidad User
-import cl.duocuc.huertohogar.backend.repository.UserRepository; // Asegúrate de importar tu UserRepository
+import cl.duocuc.huertohogar.backend.entity.Type;
+import cl.duocuc.huertohogar.backend.entity.User;
+import cl.duocuc.huertohogar.backend.repository.UserRepository;
+import cl.duocuc.huertohogar.backend.repository.TypeRepository;
 import cl.duocuc.huertohogar.backend.security.jwt.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,20 +17,24 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
 
     private final UserRepository repository;
+    private final TypeRepository typeRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
     // Método para manejar el registro de nuevos usuarios (
     // opcional, pero incluido para completitud)
-   @SuppressWarnings("null")// Para evitar advertencias de análisis estático
+   @SuppressWarnings("null")
 public AuthenticationResponse register(RegisterRequest request) {
+    Type adminType = typeRepository.findByName("ADMIN")
+            .orElseThrow(() -> new RuntimeException("Type ADMIN not found"));
+    
     var user = User.builder()
             .firstname(request.getFirstname())
             .lastname(request.getLastname())
             .email(request.getEmail())
             .password(passwordEncoder.encode(request.getPassword()))
-            .role(Role.ADMIN)
+            .type(adminType)
             .build();
 
     repository.save(user);

@@ -1,0 +1,2 @@
+DELETE TABLE type WHERE name = 'ADMIN';
+DELETE TABLE type WHERE name = 'USER';

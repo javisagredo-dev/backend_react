@@ -37,44 +37,50 @@ public class TicketService {
 
         // Obtener usuario desde el token JWT
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new RuntimeException("User not authenticated");
+        }
+        
         String email = auth.getName();
+        if (email == null || email.isEmpty()) {
+            throw new RuntimeException("Email not found in token");
+        }
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException("User not found: " + email));
 
         return createTicketForUser(request, user);
     }
 
 
     private TicketResponseDTO createTicketForUser(TicketCreateRequestDTO request, User user) {
+        try {
+            Ticket ticket = new Ticket();
+            ticket.setUser(user);
 
-        Ticket ticket = new Ticket();
-        ticket.setUser(user);
+            ticket.setPurchaseDate(
+                request.getPurchaseDate() != null ? request.getPurchaseDate() : LocalDateTime.now()
+            );
 
-        ticket.setPurchaseDate(
-            request.getPurchaseDate() != null ? request.getPurchaseDate() : LocalDateTime.now()
-        );
+            if (request.getItems() != null) {
+                for (TicketCreateItemDTO item : request.getItems()) {
+                    Product product = productRepository.findById(item.getProductId()).orElse(null);
+                    if (product == null) continue;
 
-        for (TicketCreateItemDTO item : request.getItems()) {
+                    TicketDetail detail = new TicketDetail();
+                    detail.setTicket(ticket);
+                    detail.setProduct(product);
+                    detail.setAmount(item.getAmount());
+                    detail.setSubtotal(item.getSubtotal());
+                    ticket.getDetails().add(detail);
+                }
+            }
 
-            Product product = productRepository.findById(item.getProductId())
-                    .orElse(null);
-
-            if (product == null) continue;
-
-            TicketDetail detail = new TicketDetail();
-            detail.setTicket(ticket);
-            detail.setProduct(product);
-
-            detail.setAmount(item.getAmount());
-            detail.setSubtotal(item.getSubtotal());  // Usar subtotal del front
-
-            ticket.getDetails().add(detail);
+            ticket.setTotal(request.getTotal());
+            return ticketMapper.toResponseDTO(ticketRepository.save(ticket));
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating ticket: " + e.getMessage(), e);
         }
-
-        ticket.setTotal(request.getTotal());  // Usar total del front
-
-        return ticketMapper.toResponseDTO(ticketRepository.save(ticket));
     }
 
 

@@ -30,7 +30,14 @@ public class SecurityConfiguration {
             .authorizeHttpRequests(auth -> auth
                 // Rutas públicas (para autenticación) solo de / api/v1/auth/
                 .requestMatchers("/api/v1/auth/**").permitAll()
-                .requestMatchers("/api/products").permitAll()
+                .requestMatchers("GET", "/api/products/**").permitAll()
+                .requestMatchers("POST", "/api/products/**").authenticated()
+                .requestMatchers("PUT", "/api/products/**").authenticated()
+                .requestMatchers("DELETE", "/api/products/**").authenticated()
+                .requestMatchers("OPTIONS", "/api/tickets/**").permitAll()
+                .requestMatchers("/api/tickets/**").authenticated()
+                .requestMatchers("OPTIONS", "/api/v1/admin/**").permitAll()
+                .requestMatchers("/api/v1/admin/**").authenticated()
                 
                 // Otras rutas protegidas por roles globales (opcional, se usará @PreAuthorize en el controlador)
                 .anyRequest().authenticated()

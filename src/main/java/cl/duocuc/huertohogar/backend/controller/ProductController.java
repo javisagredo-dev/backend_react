@@ -1,6 +1,7 @@
 package cl.duocuc.huertohogar.backend.controller;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.duocuc.huertohogar.backend.dto.CategoryDTO;
 import cl.duocuc.huertohogar.backend.dto.ProductDTO;
+import cl.duocuc.huertohogar.backend.entity.Category;
 import cl.duocuc.huertohogar.backend.entity.Product;
 import cl.duocuc.huertohogar.backend.mapper.ProductMapper;
+import cl.duocuc.huertohogar.backend.repository.CategoryRepository;
 import cl.duocuc.huertohogar.backend.service.ProductService;
 
 
@@ -30,6 +34,8 @@ public class ProductController {
     private ProductService productService;
     @Autowired
     private ProductMapper productMapper;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @GetMapping
     public List<ProductDTO> getAllProducts(){
@@ -43,8 +49,20 @@ public class ProductController {
             .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/categories/all")
+    public ResponseEntity<List<CategoryDTO>> getAllCategories(){
+        List<CategoryDTO> categories = categoryRepository.findAll().stream()
+            .map(cat -> CategoryDTO.builder()
+                .id(cat.getId())
+                .name(cat.getName())
+                .description(cat.getDescription())
+                .build())
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(categories);
+    }
+
     @PostMapping()
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ProductDTO> createProduct(@RequestBody Product product) {
         Product savedProduct = productService.saveProduct(product);
         return ResponseEntity.ok(productMapper.toDTO(savedProduct));
@@ -52,7 +70,7 @@ public class ProductController {
    
     
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
         return productService.getProductById(id)
             .map(existingProduct -> {
@@ -70,7 +88,7 @@ public class ProductController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id){
         if (productService.getProductById(id).isPresent()) {
             productService.deleteProduct(id);

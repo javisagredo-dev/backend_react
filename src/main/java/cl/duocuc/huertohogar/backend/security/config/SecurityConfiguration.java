@@ -39,7 +39,10 @@ public class SecurityConfiguration {
                 .requestMatchers("OPTIONS", "/api/tickets/**").permitAll()
                 .requestMatchers("/api/tickets/**").authenticated()
                 .requestMatchers("OPTIONS", "/api/v1/admin/**").permitAll()
-                .requestMatchers("/api/v1/admin/**").authenticated()
+                .requestMatchers("GET", "/api/v1/admin/**").authenticated()
+                .requestMatchers("POST", "/api/v1/admin/**").authenticated()
+                .requestMatchers("PUT", "/api/v1/admin/**").authenticated()
+                .requestMatchers("DELETE", "/api/v1/admin/**").authenticated()
                 
                 // Otras rutas protegidas por roles globales (opcional, se usará @PreAuthorize en el controlador)
                 .anyRequest().authenticated()
